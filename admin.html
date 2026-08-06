@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>DJ PRO ADMIN 6.0</title>
+
+<link rel="stylesheet" href="admin.css">
+
+</head>
+
+
+<body>
+
+
+<div id="login">
+
+<h1>DJ PRO ADMIN</h1>
+
+<h3>Digite a senha</h3>
+
+<input type="password" id="senha">
+
+<button onclick="entrar()">
+ENTRAR
+</button>
+
+<p id="erro"></p>
+
+</div>
+
+
+
+<div id="painelAdmin" style="display:none">
+
+
+<h1>PAINEL DE CONTROLE</h1>
+
+
+<label>Nome da Festa</label>
+
+<input id="festa" value="NOME DA FESTA">
+
+
+
+<label>Programação dos DJs</label>
+
+<table id="tabelaDJ">
+
+    <thead>
+
+        <tr>
+
+            <th>Horário</th>
+
+            <th>Nome do DJ</th>
+
+            <th>Ação</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody id="corpoTabela">
+
+    </tbody>
+
+</table>
+
+<br>
+
+<input type="time" id="novoHorario">
+
+<input
+type="text"
+id="novoDJ"
+placeholder="Nome do DJ">
+
+<button onclick="adicionarDJ()">
+
+➕ ADICIONAR DJ
+
+</button>
+
+<label>Notícias</label>
+
+<textarea id="noticias"></textarea>
+
+
+
+<button onclick="salvar()">
+
+SALVAR PROGRAMAÇÃO
+
+</button>
+
+
+</div>
+
+
+
+<script src="admin.js"></script>
+
+
+</body>
+
+</html>

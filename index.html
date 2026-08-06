@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DJ PRO LIVE MANAGER 6.2</title>
+
+<link rel="stylesheet" href="painel.css">
+
+</head>
+
+<body>
+<div id="barraSuperior">
+
+    <marquee
+        behavior="scroll"
+        direction="left"
+        scrollamount="5">
+
+        🟢 SISTEMA ONLINE |
+        🎧 DJ PRO LIVE MANAGER 6.2 |
+        📅 <span id="dataHoje"></span> |
+        🕒 <span id="horaBarra"></span> |
+        🎉 Bem-vindos à Família Pagode e Equipe Tenebrosa
+
+    </marquee>
+
+</div>
+
+<div class="painel">
+
+    <!-- LADO ESQUERDO -->
+
+    <div class="ladoEsquerdo">
+
+        <div id="relogio">
+            00:00:00
+        </div>
+
+        <img src="imagens/brasao.png" class="brasao">
+
+        <h1>FAMÍLIA PAGODE</h1>
+
+        <div class="separador"></div>
+
+        <img src="imagens/tenebrosa.png" class="brasao">
+
+        <h2>EQUIPE TENEBROSA</h2>
+
+    </div>
+
+    <!-- LADO DIREITO -->
+
+    <div class="ladoDireito">
+
+        <!-- FESTA -->
+
+        <div class="caixa">
+
+            <h3>EVENTO</h3>
+
+            <div id="evento">
+
+                NOME DA FESTA
+
+            </div>
+
+        </div>
+
+        <!-- DJ AO VIVO -->
+
+        <div class="caixa">
+
+            <h3>DJ AO VIVO</h3>
+
+            <div id="djAtual">
+
+                AGUARDANDO
+
+            </div>
+
+        </div>
+
+        <!-- PRÓXIMO DJ -->
+
+        <div class="caixa">
+
+            <h3>PRÓXIMO DJ</h3>
+
+            <div id="proximoDJ">
+
+                AGUARDANDO
+
+            </div>
+
+            <br>
+
+            <div id="contador">
+
+                00:00:00
+
+            </div>
+
+        </div>
+
+        <!-- LISTA -->
+
+        <div class="caixa">
+
+            <h3>PROGRAMAÇÃO</h3>
+
+            <div id="lista">
+
+            </div>
+
+        </div>
+
+        <!-- NOTÍCIAS -->
+
+        <div class="caixa">
+
+            <h3>NOTÍCIAS</h3>
+
+            <div id="noticias">
+
+                <marquee
+                    behavior="scroll"
+                    direction="left"
+                    scrollamount="6">
+
+                    🍻 Bem-vindos • Família Pagode • Equipe Tenebrosa • DJ PRO LIVE MANAGER
+
+                </marquee>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TELA DE TROCA -->
+
+<div id="telaTroca">
+
+    <div id="textoTroca">
+
+        🎧
+
+        <br><br>
+
+        AGORA NO COMANDO
+
+        <br><br>
+
+        <span id="nomeTroca"></span>
+
+    </div>
+
+</div>
+
+<script src="painel.js"></script>
+
+</body>
+
+</html>
