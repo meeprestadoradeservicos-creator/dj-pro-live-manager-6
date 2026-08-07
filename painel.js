@@ -41,12 +41,13 @@ async function carregarPainelOnline(){
 
     try {
 
-        const { data, error } =
-            await supabaseClient
-                .from("painel")
-                .select("*")
-                .eq("id", 1)
-                .single();
+       const { data, error } =
+    await supabaseClient
+        .from("painel")
+        .select("*")
+        .order("id", { ascending: false })
+        .limit(1)
+        .single();
 
 
         if(error){
