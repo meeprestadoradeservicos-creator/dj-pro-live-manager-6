@@ -165,41 +165,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="painel.js"></script>
-<script>
-setTimeout(async function(){
 
-    let teste = document.createElement("div");
-
-    teste.style.position = "fixed";
-    teste.style.top = "10px";
-    teste.style.left = "10px";
-    teste.style.zIndex = "999999";
-    teste.style.background = "black";
-    teste.style.color = "lime";
-    teste.style.padding = "15px";
-    teste.style.fontSize = "20px";
-
-    if(typeof supabase === "undefined"){
-
-        teste.innerHTML = "❌ SUPABASE NÃO CARREGOU";
-
-    }else{
-
-        teste.innerHTML = "✅ SUPABASE CARREGOU";
-
-    }
-
-    document.body.appendChild(teste);
-
-},2000);
-</script>
-    
-    <script>
-document.body.setAttribute(
-    "data-supabase",
-    typeof supabase
-);
-</script>
 </body>
 
 </html>
