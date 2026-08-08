@@ -165,7 +165,12 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="painel.js"></script>
-
+<script>
+document.body.setAttribute(
+    "data-supabase",
+    typeof supabase
+);
+</script>
 </body>
 
 </html>
