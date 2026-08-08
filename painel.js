@@ -1,3 +1,4 @@
+alert("PAINEL.JS INICIOU");
 // =====================================
 // DJ PRO LIVE MANAGER 7.0
 // PAINEL PRINCIPAL ONLINE
