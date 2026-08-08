@@ -781,3 +781,6 @@ supabaseClient
     .subscribe();
 
 
+console.log("PAINEL.JS TERMINOU");
+console.log("SUPABASE:", typeof supabase);
+console.log("CLIENTE:", typeof supabaseClient);
