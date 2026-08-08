@@ -590,11 +590,12 @@ function anunciarDJ(nome){
     speechSynthesis.cancel();
 
 
-    let mensagem =
-        "Atenção ouvintes! " +
-        "Entrando agora no comando, DJ " +
-        nome;
+    let nomeVoz = nome.replace(/^DJ\s+/i, "");
 
+let mensagem =
+    "Atenção galera! " +
+    "Entrando no comando, " +
+    nomeVoz;
 
     let fala =
         new SpeechSynthesisUtterance(
