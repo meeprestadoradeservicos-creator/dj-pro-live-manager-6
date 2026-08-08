@@ -779,3 +779,5 @@ supabaseClient
         }
     )
     .subscribe();
+
+alert("JAVASCRIPT FUNCIONANDO NO SIGN 1");
