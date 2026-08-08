@@ -753,3 +753,29 @@ setInterval(
     },
     5000
 );
+// =====================================
+// SUPABASE REALTIME
+// ATUALIZAÇÃO AUTOMÁTICA DO PAINEL
+// =====================================
+
+supabaseClient
+    .channel("painel-online")
+    .on(
+        "postgres_changes",
+        {
+            event: "*",
+            schema: "public",
+            table: "painel"
+        },
+        function(payload){
+
+            console.log(
+                "Atualização recebida:",
+                payload
+            );
+
+            carregarPainelOnline();
+
+        }
+    )
+    .subscribe();
