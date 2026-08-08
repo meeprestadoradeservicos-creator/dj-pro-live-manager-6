@@ -594,7 +594,7 @@ function anunciarDJ(nome){
 
 let mensagem =
     "Atenção galera! " +
-    "Entrando no comando, " +
+    "Entrando no comando,DJ " +
     nomeVoz;
 
     let fala =
