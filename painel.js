@@ -807,6 +807,42 @@ setInterval(
     5000
 );
 // =====================================
+// RELÓGIO INDEPENDENTE - SIGN 1
+// =====================================
+
+function relogioIndependente(){
+
+    const campo =
+        document.getElementById("relogio");
+
+    if(!campo){
+        return;
+    }
+
+    const agora = new Date();
+
+    const hora =
+        String(agora.getHours()).padStart(2,"0");
+
+    const minuto =
+        String(agora.getMinutes()).padStart(2,"0");
+
+    const segundo =
+        String(agora.getSeconds()).padStart(2,"0");
+
+    campo.textContent =
+        hora + ":" +
+        minuto + ":" +
+        segundo;
+}
+
+relogioIndependente();
+
+setInterval(
+    relogioIndependente,
+    1000
+);
+// =====================================
 // SUPABASE REALTIME
 // ATUALIZAÇÃO AUTOMÁTICA DO PAINEL
 // =====================================
