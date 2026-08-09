@@ -39,6 +39,37 @@
         <div id="relogio">
             00:00:00
         </div>
+        <script>
+(function(){
+
+    function testarRelogio(){
+
+        var campo = document.getElementById("relogio");
+
+        if (!campo) {
+            return;
+        }
+
+        var agora = new Date();
+
+        var h = String(agora.getHours());
+        var m = String(agora.getMinutes());
+        var s = String(agora.getSeconds());
+
+        if (h.length < 2) h = "0" + h;
+        if (m.length < 2) m = "0" + m;
+        if (s.length < 2) s = "0" + s;
+
+        campo.innerHTML =
+            h + ":" + m + ":" + s;
+    }
+
+    testarRelogio();
+
+    setInterval(testarRelogio, 1000);
+
+})();
+</script>
 
        <img src="brasao.png" class="brasao">
 
