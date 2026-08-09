@@ -13,13 +13,6 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_CjJOUaV2x_taN_DorNADOA_q2chsO9U";
 
-const supabaseClient =
-    supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-
 // =====================================
 // VARIÁVEIS
 // =====================================
@@ -41,20 +34,25 @@ async function carregarPainelOnline(){
 
     try {
 
-       const { data, error } =
-    await supabaseClient
-        .from("painel")
-        .select("*")
-        .order("id", { ascending: false })
-        .limit(1)
-        .single();
+        const resposta = await fetch(
+            SUPABASE_URL +
+            "/rest/v1/painel?select=*&order=id.desc&limit=1",
+            {
+                method: "GET",
 
+                headers: {
+                    "apikey": SUPABASE_KEY,
+                    "Authorization":
+                        "Bearer " + SUPABASE_KEY
+                }
+            }
+        );
 
-        if(error){
+        if(!resposta.ok){
 
             console.log(
-                "Erro Supabase:",
-                error
+                "Erro API Supabase:",
+                resposta.status
             );
 
             carregarPainelLocal();
@@ -62,25 +60,67 @@ async function carregarPainelOnline(){
             return;
         }
 
+        const lista =
+            await resposta.json();
 
-        if(data){
+        const data =
+            Array.isArray(lista)
+                ? lista[0]
+                : null;
 
-            dadosPainel = {
+        if(!data){
 
-                festa:
-                    data.festa || "",
+            carregarPainelLocal();
 
-                noticias:
-                    data.noticias || "",
+            return;
+        }
 
-                programacao:
-                    Array.isArray(data.programacao)
-                        ? data.programacao
-                        : []
+        dadosPainel = {
 
-            };
+            festa:
+                data.festa || "",
 
+            noticias:
+                data.noticias || "",
 
+            programacao:
+                Array.isArray(data.programacao)
+                    ? data.programacao
+                    : []
+
+        };
+
+        localStorage.setItem(
+            "festa",
+            dadosPainel.festa
+        );
+
+        localStorage.setItem(
+            "noticias",
+            dadosPainel.noticias
+        );
+
+        localStorage.setItem(
+            "listaDJ",
+            JSON.stringify(
+                dadosPainel.programacao
+            )
+        );
+
+        mostrarDadosPainel();
+
+    } catch(erro) {
+
+        console.log(
+            "Erro de conexão:",
+            erro
+        );
+
+        carregarPainelLocal();
+
+    }
+
+}
             // BACKUP LOCAL
 
             localStorage.setItem(
@@ -758,27 +798,6 @@ setInterval(
 // ATUALIZAÇÃO AUTOMÁTICA DO PAINEL
 // =====================================
 
-supabaseClient
-    .channel("painel-online")
-    .on(
-        "postgres_changes",
-        {
-            event: "*",
-            schema: "public",
-            table: "painel"
-        },
-        function(payload){
-
-            console.log(
-                "Atualização recebida:",
-                payload
-            );
-
-            carregarPainelOnline();
-
-        }
-    )
-    .subscribe();
 
 
 console.log("PAINEL.JS TERMINOU");
