@@ -194,7 +194,47 @@
 
 </div>
 <script src="painel.js"></script>
+<script>
+(function(){
+
+    function atualizarRelogioSign(){
+
+        var campo =
+            document.getElementById("relogio");
+
+        if (!campo) return;
+
+        var agora = new Date();
+
+        var h =
+            String(agora.getHours()).padStart(2,"0");
+
+        var m =
+            String(agora.getMinutes()).padStart(2,"0");
+
+        var s =
+            String(agora.getSeconds()).padStart(2,"0");
+
+        campo.innerHTML =
+            h + ":" + m + ":" + s;
+
+        if (typeof verificarDJ === "function") {
+            verificarDJ(h + ":" + m);
+        }
+
+    }
+
+    atualizarRelogioSign();
+
+    setInterval(
+        atualizarRelogioSign,
+        1000
+    );
+
+})();
+</script>
 </body>
+    
 
 </html>
 <!-- DJ PRO LIVE MANAGER 6.2 ONLINE -->
