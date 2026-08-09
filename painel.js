@@ -327,9 +327,16 @@ function atualizarRelogio(){
     }
 
 
+   try {
     verificarDJ(
         h + ":" + m
     );
+} catch (erro) {
+    console.log(
+        "Erro ao verificar DJ:",
+        erro
+    );
+}
 
 }
 atualizarRelogio();
