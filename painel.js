@@ -13,6 +13,7 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_CjJOUaV2x_taN_DorNADOA_q2chsO9U";
 
+
 // =====================================
 // VARIÁVEIS
 // =====================================
@@ -27,53 +28,138 @@ let dadosPainel = {
 
 
 // =====================================
+// CONVERTER PROGRAMAÇÃO
+// =====================================
+
+function normalizarProgramacao(programacao) {
+
+    if (Array.isArray(programacao)) {
+        return programacao;
+    }
+
+    if (typeof programacao === "string") {
+
+        try {
+            const convertido = JSON.parse(programacao);
+
+            if (Array.isArray(convertido)) {
+                return convertido;
+            }
+
+        } catch (erro) {
+
+            console.log(
+                "Não foi possível converter a programação:",
+                erro
+            );
+
+        }
+
+    }
+
+    return [];
+}
+
+
+// =====================================
+// CONVERTER HORÁRIO PARA MINUTOS
+// =====================================
+
+function horarioParaMinutos(horario) {
+
+    if (!horario) {
+        return null;
+    }
+
+    let texto =
+        String(horario)
+            .trim()
+            .substring(0, 5);
+
+    let partes =
+        texto.split(":");
+
+    if (partes.length !== 2) {
+        return null;
+    }
+
+    let horas =
+        Number(partes[0]);
+
+    let minutos =
+        Number(partes[1]);
+
+    if (
+        Number.isNaN(horas) ||
+        Number.isNaN(minutos)
+    ) {
+        return null;
+    }
+
+    return (
+        horas * 60 +
+        minutos
+    );
+}
+
+
+// =====================================
 // CARREGAR DADOS DO SUPABASE
 // =====================================
 
-async function carregarPainelOnline(){
+async function carregarPainelOnline() {
 
     try {
 
-        const resposta = await fetch(
-            SUPABASE_URL +
-            "/rest/v1/painel?select=*&order=id.desc&limit=1",
-            {
-                method: "GET",
+        const resposta =
+            await fetch(
+                SUPABASE_URL +
+                "/rest/v1/painel?select=*&order=id.desc&limit=1",
+                {
+                    method: "GET",
 
-                headers: {
-                    "apikey": SUPABASE_KEY,
-                    "Authorization":
-                        "Bearer " + SUPABASE_KEY
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization":
+                            "Bearer " + SUPABASE_KEY
+                    }
                 }
-            }
-        );
+            );
 
-        if(!resposta.ok){
+
+        if (!resposta.ok) {
 
             console.log(
                 "Erro API Supabase:",
                 resposta.status
             );
 
-            carregarPainelLocal();
-
             return;
+
         }
+
 
         const lista =
             await resposta.json();
 
-        const data =
-            Array.isArray(lista)
-                ? lista[0]
-                : null;
 
-        if(!data){
+        if (
+            !Array.isArray(lista) ||
+            lista.length === 0
+        ) {
 
-            carregarPainelLocal();
+            console.log(
+                "Nenhum registro encontrado no Supabase."
+            );
 
             return;
+
         }
+
+
+        const data =
+            lista[0];
+
 
         dadosPainel = {
 
@@ -84,21 +170,30 @@ async function carregarPainelOnline(){
                 data.noticias || "",
 
             programacao:
-                Array.isArray(data.programacao)
-                    ? data.programacao
-                    : []
+                normalizarProgramacao(
+                    data.programacao
+                )
 
         };
+
+
+        console.log(
+            "Programação recebida:",
+            dadosPainel.programacao
+        );
+
 
         localStorage.setItem(
             "festa",
             dadosPainel.festa
         );
 
+
         localStorage.setItem(
             "noticias",
             dadosPainel.noticias
         );
+
 
         localStorage.setItem(
             "listaDJ",
@@ -107,48 +202,18 @@ async function carregarPainelOnline(){
             )
         );
 
+
         mostrarDadosPainel();
 
-    } catch(erro) {
+
+        // Atualiza imediatamente o DJ
+        atualizarDJAgora();
+
+
+    } catch (erro) {
 
         console.log(
-            "Erro de conexão:",
-            erro
-        );
-
-        carregarPainelLocal();
-
-    }
-
-}
-            // BACKUP LOCAL
-
-            localStorage.setItem(
-                "festa",
-                dadosPainel.festa
-            );
-
-            localStorage.setItem(
-                "noticias",
-                dadosPainel.noticias
-            );
-
-            localStorage.setItem(
-                "listaDJ",
-                JSON.stringify(
-                    dadosPainel.programacao
-                )
-            );
-
-
-            mostrarDadosPainel();
-
-        }
-
-    } catch(erro) {
-
-        console.log(
-            "Erro de conexão:",
+            "Erro de conexão com Supabase:",
             erro
         );
 
@@ -163,16 +228,43 @@ async function carregarPainelOnline(){
 // BACKUP LOCAL
 // =====================================
 
-function carregarPainelLocal(){
+function carregarPainelLocal() {
 
     let festa =
-        localStorage.getItem("festa");
+        localStorage.getItem(
+            "festa"
+        );
+
 
     let noticias =
-        localStorage.getItem("noticias");
+        localStorage.getItem(
+            "noticias"
+        );
+
 
     let lista =
-        localStorage.getItem("listaDJ");
+        localStorage.getItem(
+            "listaDJ"
+        );
+
+
+    let programacao = [];
+
+
+    if (lista) {
+
+        try {
+
+            programacao =
+                JSON.parse(lista);
+
+        } catch (erro) {
+
+            programacao = [];
+
+        }
+
+    }
 
 
     dadosPainel = {
@@ -184,33 +276,39 @@ function carregarPainelLocal(){
             noticias || "",
 
         programacao:
-            lista
-                ? JSON.parse(lista)
-                : []
+            normalizarProgramacao(
+                programacao
+            )
 
     };
 
 
     mostrarDadosPainel();
 
+    atualizarDJAgora();
+
 }
 
 
 // =====================================
-// MOSTRAR FESTA, NOTÍCIA E PROGRAMAÇÃO
+// MOSTRAR FESTA / NOTÍCIAS
 // =====================================
 
-function mostrarDadosPainel(){
+function mostrarDadosPainel() {
 
     let evento =
-        document.getElementById("evento");
+        document.getElementById(
+            "evento"
+        );
 
 
     let noticias =
-        document.getElementById("noticias");
+        document.getElementById(
+            "noticias"
+        );
 
 
-    if(evento){
+    if (evento) {
 
         evento.innerHTML =
             dadosPainel.festa ||
@@ -219,18 +317,15 @@ function mostrarDadosPainel(){
     }
 
 
-    if(noticias){
+    if (noticias) {
 
         noticias.innerHTML =
-
             '<div class="noticiaRolando">' +
-
             (
                 dadosPainel.noticias ||
                 "🍻 Bem-vindos • Família Pagode • Equipe Tenebrosa"
             ) +
-
-            '</div>';
+            "</div>";
 
     }
 
@@ -246,39 +341,55 @@ function mostrarDadosPainel(){
 // MOSTRAR PROGRAMAÇÃO
 // =====================================
 
-function mostrarLista(listaDJ){
+function mostrarLista(listaDJ) {
 
-    let texto = "";
+    let lista =
+        document.getElementById(
+            "lista"
+        );
 
 
-    if(!Array.isArray(listaDJ)){
+    if (!lista) {
+        return;
+    }
 
-        listaDJ = [];
+
+    listaDJ =
+        normalizarProgramacao(
+            listaDJ
+        );
+
+
+    if (listaDJ.length === 0) {
+
+        lista.innerHTML =
+            "SEM PROGRAMAÇÃO";
+
+        return;
 
     }
 
 
-    listaDJ.forEach(function(dj){
+    let texto = "";
+
+
+    listaDJ.forEach(function(dj) {
 
         texto +=
-            dj.horario +
+            String(
+                dj.horario || ""
+            ) +
             " - " +
-            dj.nome +
+            String(
+                dj.nome || "DJ"
+            ) +
             "<br>";
 
     });
 
 
-    let lista =
-        document.getElementById("lista");
-
-
-    if(lista){
-
-        lista.innerHTML =
-            texto;
-
-    }
+    lista.innerHTML =
+        texto;
 
 }
 
@@ -287,7 +398,7 @@ function mostrarLista(listaDJ){
 // RELÓGIO
 // =====================================
 
-function atualizarRelogio(){
+function atualizarRelogio() {
 
     const agora =
         new Date();
@@ -296,19 +407,19 @@ function atualizarRelogio(){
     let h =
         String(
             agora.getHours()
-        ).padStart(2,"0");
+        ).padStart(2, "0");
 
 
     let m =
         String(
             agora.getMinutes()
-        ).padStart(2,"0");
+        ).padStart(2, "0");
 
 
     let s =
         String(
             agora.getSeconds()
-        ).padStart(2,"0");
+        ).padStart(2, "0");
 
 
     let relogio =
@@ -317,7 +428,7 @@ function atualizarRelogio(){
         );
 
 
-    if(relogio){
+    if (relogio) {
 
         relogio.innerHTML =
             h + ":" +
@@ -327,131 +438,269 @@ function atualizarRelogio(){
     }
 
 
-   try {
-    verificarDJ(
-        h + ":" + m
-    );
-} catch (erro) {
-    console.log(
-        "Erro ao verificar DJ:",
-        erro
-    );
-}
+    atualizarDJAgora();
 
 }
-atualizarRelogio();
-
-setInterval(
-    atualizarRelogio,
-    1000
-);
 
 
 // =====================================
-// DJ ATUAL / PRÓXIMO DJ
+// ESCOLHER DJ ATUAL
 // =====================================
 
-function verificarDJ(horaAtual){
+function atualizarDJAgora() {
 
-    let listaDJ = dadosPainel.programacao;
+    let listaDJ =
+        normalizarProgramacao(
+            dadosPainel.programacao
+        );
 
-    if(!Array.isArray(listaDJ) || listaDJ.length === 0){
+
+    if (
+        listaDJ.length === 0
+    ) {
+
+        atualizarCamposDJ(
+            "AGUARDANDO",
+            "AGUARDANDO",
+            null
+        );
+
         return;
+
     }
 
-    // Organiza os DJs pelo horário
-    listaDJ = [...listaDJ].sort(function(a, b){
 
-        let horaA = String(a.horario || "00:00").trim();
-        let horaB = String(b.horario || "00:00").trim();
+    // Ordena pelo horário
+    listaDJ =
+        [...listaDJ].sort(
+            function(a, b) {
 
-        return horaA.localeCompare(horaB);
+                let horaA =
+                    horarioParaMinutos(
+                        a.horario
+                    );
 
-    });
+                let horaB =
+                    horarioParaMinutos(
+                        b.horario
+                    );
 
-    let atual = "AGUARDANDO";
-    let proximo = "SEM PROGRAMAÇÃO";
-    let proximoHorario = null;
 
-    // Procura o DJ que já começou
-    for(let i = 0; i < listaDJ.length; i++){
+                if (horaA === null) {
+                    return 1;
+                }
 
-        let horarioDJ =
-            String(listaDJ[i].horario || "")
-            .trim()
-            .substring(0,5);
 
-        if(horarioDJ && horaAtual >= horarioDJ){
+                if (horaB === null) {
+                    return -1;
+                }
 
-            atual =
-                listaDJ[i].nome || "DJ";
 
-            // Próximo DJ
-            if(i + 1 < listaDJ.length){
-
-                proximo =
-                    listaDJ[i + 1].nome || "DJ";
-
-                proximoHorario =
-                    String(
-                        listaDJ[i + 1].horario || ""
-                    )
-                    .trim()
-                    .substring(0,5);
+                return horaA - horaB;
 
             }
+        );
+
+
+    const agora =
+        new Date();
+
+
+    const minutosAgora =
+        agora.getHours() * 60 +
+        agora.getMinutes();
+
+
+    let indiceAtual = -1;
+
+
+    // Procura o último DJ
+    // cujo horário já chegou
+    for (
+        let i = 0;
+        i < listaDJ.length;
+        i++
+    ) {
+
+        let minutosDJ =
+            horarioParaMinutos(
+                listaDJ[i].horario
+            );
+
+
+        if (
+            minutosDJ !== null &&
+            minutosDJ <= minutosAgora
+        ) {
+
+            indiceAtual = i;
 
         }
 
     }
 
-    // Atualiza DJ AO VIVO
-    let campoAtual =
-        document.getElementById("djAtual");
 
-    if(campoAtual){
+    // =================================
+    // AINDA NÃO CHEGOU O PRIMEIRO DJ
+    // =================================
+
+    if (indiceAtual === -1) {
+
+        let primeiro =
+            listaDJ[0];
+
+
+        atualizarCamposDJ(
+            "AGUARDANDO",
+            primeiro.nome || "DJ",
+            primeiro.horario || null
+        );
+
+
+        return;
+
+    }
+
+
+    // =================================
+    // DJ ATUAL
+    // =================================
+
+    let atual =
+        listaDJ[indiceAtual];
+
+
+    // =================================
+    // PRÓXIMO DJ
+    // =================================
+
+    let indiceProximo =
+        indiceAtual + 1;
+
+
+    let proximo = null;
+
+
+    if (
+        indiceProximo <
+        listaDJ.length
+    ) {
+
+        proximo =
+            listaDJ[indiceProximo];
+
+    }
+
+
+    let nomeAtual =
+        atual.nome ||
+        "DJ";
+
+
+    let nomeProximo =
+        proximo
+            ? (
+                proximo.nome ||
+                "DJ"
+            )
+            : "SEM PROGRAMAÇÃO";
+
+
+    let horarioProximo =
+        proximo
+            ? (
+                proximo.horario ||
+                null
+            )
+            : null;
+
+
+    atualizarCamposDJ(
+        nomeAtual,
+        nomeProximo,
+        horarioProximo
+    );
+
+
+    // =================================
+    // DETECTAR TROCA
+    // =================================
+
+    if (
+        nomeAtual !== ultimoDJ
+    ) {
+
+        let eraOutroDJ =
+            ultimoDJ !== "" &&
+            ultimoDJ !== nomeAtual;
+
+
+        ultimoDJ =
+            nomeAtual;
+
+
+        if (eraOutroDJ) {
+
+            mostrarTroca(
+                nomeAtual
+            );
+
+
+            anunciarDJ(
+                nomeAtual
+            );
+
+        }
+
+    }
+
+}
+
+
+// =====================================
+// ATUALIZAR CAMPOS DO PAINEL
+// =====================================
+
+function atualizarCamposDJ(
+    atual,
+    proximo,
+    horarioProximo
+) {
+
+    let campoAtual =
+        document.getElementById(
+            "djAtual"
+        );
+
+
+    let campoProximo =
+        document.getElementById(
+            "proximoDJ"
+        );
+
+
+    if (campoAtual) {
 
         campoAtual.innerHTML =
             atual;
 
     }
 
-    // Atualiza PRÓXIMO DJ
-    let campoProximo =
-        document.getElementById("proximoDJ");
 
-    if(campoProximo){
+    if (campoProximo) {
 
         campoProximo.innerHTML =
             proximo;
 
     }
 
-    // Atualiza contador
+
     atualizarContador(
-        proximoHorario
+        horarioProximo
     );
 
-    // Detecta troca de DJ
-    if(
-        atual !== ultimoDJ &&
-        atual !== "AGUARDANDO"
-    ){
-
-        ultimoDJ =
-            atual;
-
-        mostrarTroca(
-            atual
-        );
-
-        anunciarDJ(
-            atual
-        );
-
-    }
-
 }
+
 
 // =====================================
 // CONTADOR
@@ -459,7 +708,7 @@ function verificarDJ(horaAtual){
 
 function atualizarContador(
     proximoHorario
-){
+) {
 
     let contador =
         document.getElementById(
@@ -467,14 +716,58 @@ function atualizarContador(
         );
 
 
-    if(!contador){
+    if (!contador) {
+        return;
+    }
+
+
+    if (!proximoHorario) {
+
+        contador.innerHTML =
+            "00:00:00";
 
         return;
 
     }
 
 
-    if(!proximoHorario){
+    let partes =
+        String(
+            proximoHorario
+        )
+        .trim()
+        .substring(0, 5)
+        .split(":");
+
+
+    if (
+        partes.length !== 2
+    ) {
+
+        contador.innerHTML =
+            "00:00:00";
+
+        return;
+
+    }
+
+
+    let horas =
+        Number(
+            partes[0]
+        );
+
+
+    let minutos =
+        Number(
+            partes[1]
+        );
+
+
+    if (
+        Number.isNaN(horas) ||
+        Number.isNaN(minutos)
+    ) {
 
         contador.innerHTML =
             "00:00:00";
@@ -488,34 +781,33 @@ function atualizarContador(
         new Date();
 
 
-    let partes =
-        proximoHorario.split(":");
-
-
     let destino =
         new Date();
 
 
     destino.setHours(
-        Number(partes[0]),
-        Number(partes[1]),
+        horas,
+        minutos,
         0,
         0
     );
 
 
-    let diferenca =
-        destino - agora;
+    // Se o próximo horário já passou,
+    // significa que é amanhã.
+    if (
+        destino <= agora
+    ) {
 
-
-    if(diferenca < 0){
-
-        contador.innerHTML =
-            "00:00:00";
-
-        return;
+        destino.setDate(
+            destino.getDate() + 1
+        );
 
     }
+
+
+    let diferenca =
+        destino - agora;
 
 
     let total =
@@ -524,36 +816,36 @@ function atualizarContador(
         );
 
 
-    let horas =
+    let h =
         Math.floor(
             total / 3600
         );
 
 
-    let minutos =
+    let m =
         Math.floor(
             (total % 3600) / 60
         );
 
 
-    let segundos =
+    let s =
         total % 60;
 
 
     contador.innerHTML =
 
-        String(horas)
-            .padStart(2,"0")
+        String(h)
+            .padStart(2, "0")
 
         + ":" +
 
-        String(minutos)
-            .padStart(2,"0")
+        String(m)
+            .padStart(2, "0")
 
         + ":" +
 
-        String(segundos)
-            .padStart(2,"0");
+        String(s)
+            .padStart(2, "0");
 
 }
 
@@ -562,7 +854,7 @@ function atualizarContador(
 // TELA DE TROCA
 // =====================================
 
-function mostrarTroca(nome){
+function mostrarTroca(nome) {
 
     let nomeTela =
         document.getElementById(
@@ -576,7 +868,7 @@ function mostrarTroca(nome){
         );
 
 
-    if(nomeTela){
+    if (nomeTela) {
 
         nomeTela.innerHTML =
             nome;
@@ -584,14 +876,14 @@ function mostrarTroca(nome){
     }
 
 
-    if(tela){
+    if (tela) {
 
         tela.style.display =
             "flex";
 
 
         setTimeout(
-            function(){
+            function() {
 
                 tela.style.display =
                     "none";
@@ -609,11 +901,11 @@ function mostrarTroca(nome){
 // VOZ DO DJ
 // =====================================
 
-function anunciarDJ(nome){
+function anunciarDJ(nome) {
 
-    if(
+    if (
         !("speechSynthesis" in window)
-    ){
+    ) {
 
         return;
 
@@ -623,12 +915,19 @@ function anunciarDJ(nome){
     speechSynthesis.cancel();
 
 
-    let nomeVoz = nome.replace(/^DJ\s+/i, "");
+    let nomeVoz =
+        String(nome)
+            .replace(
+                /^DJ\s+/i,
+                ""
+            );
 
-let mensagem =
-    "Atenção galera! " +
-    "Entrando no comando,DJ " +
-    nomeVoz;
+
+    let mensagem =
+        "Atenção galera! " +
+        "Entrando no comando, DJ " +
+        nomeVoz;
+
 
     let fala =
         new SpeechSynthesisUtterance(
@@ -663,7 +962,7 @@ let mensagem =
 // DATA E HORA DA BARRA
 // =====================================
 
-function atualizarBarra(){
+function atualizarBarra() {
 
     let agora =
         new Date();
@@ -672,13 +971,13 @@ function atualizarBarra(){
     let dia =
         String(
             agora.getDate()
-        ).padStart(2,"0");
+        ).padStart(2, "0");
 
 
     let mes =
         String(
             agora.getMonth() + 1
-        ).padStart(2,"0");
+        ).padStart(2, "0");
 
 
     let ano =
@@ -688,19 +987,19 @@ function atualizarBarra(){
     let hora =
         String(
             agora.getHours()
-        ).padStart(2,"0")
+        ).padStart(2, "0")
 
         + ":" +
 
         String(
             agora.getMinutes()
-        ).padStart(2,"0")
+        ).padStart(2, "0")
 
         + ":" +
 
         String(
             agora.getSeconds()
-        ).padStart(2,"0");
+        ).padStart(2, "0");
 
 
     let dataHoje =
@@ -715,7 +1014,7 @@ function atualizarBarra(){
         );
 
 
-    if(dataHoje){
+    if (dataHoje) {
 
         dataHoje.innerHTML =
             dia + "/" +
@@ -725,7 +1024,7 @@ function atualizarBarra(){
     }
 
 
-    if(horaBarra){
+    if (horaBarra) {
 
         horaBarra.innerHTML =
             hora;
@@ -751,7 +1050,7 @@ atualizarBarra();
 // =====================================
 
 setInterval(
-    function(){
+    function() {
 
         atualizarRelogio();
 
@@ -765,7 +1064,7 @@ setInterval(
 // =====================================
 
 setInterval(
-    function(){
+    function() {
 
         atualizarBarra();
 
@@ -779,56 +1078,33 @@ setInterval(
 // =====================================
 
 setInterval(
-    function(){
+    function() {
 
         carregarPainelOnline();
 
     },
     5000
 );
-// =====================================
-// RELÓGIO INDEPENDENTE - SIGN 1
-// =====================================
 
-function relogioIndependente(){
 
-    const campo =
-        document.getElementById("relogio");
-
-    if(!campo){
-        return;
-    }
-
-    const agora = new Date();
-
-    const hora =
-        String(agora.getHours()).padStart(2,"0");
-
-    const minuto =
-        String(agora.getMinutes()).padStart(2,"0");
-
-    const segundo =
-        String(agora.getSeconds()).padStart(2,"0");
-
-    campo.textContent =
-        hora + ":" +
-        minuto + ":" +
-        segundo;
-}
-
-relogioIndependente();
-
-setInterval(
-    relogioIndependente,
-    1000
+console.log(
+    "====================================="
 );
-// =====================================
-// SUPABASE REALTIME
-// ATUALIZAÇÃO AUTOMÁTICA DO PAINEL
-// =====================================
 
+console.log(
+    "PAINEL.JS CARREGADO CORRETAMENTE"
+);
 
+console.log(
+    "SUPABASE:",
+    SUPABASE_URL
+);
 
-console.log("PAINEL.JS TERMINOU");
-console.log("SUPABASE:", typeof supabase);
-console.log("CLIENTE:", typeof supabaseClient);
+console.log(
+    "PROGRAMACAO:",
+    dadosPainel.programacao
+);
+
+console.log(
+    "====================================="
+);
