@@ -353,58 +353,51 @@ setInterval(
 
 function verificarDJ(horaAtual){
 
-    let listaDJ =
-        dadosPainel.programacao;
+    let listaDJ = dadosPainel.programacao;
 
-
-    if(
-        !Array.isArray(listaDJ) ||
-        listaDJ.length === 0
-    ){
-
+    if(!Array.isArray(listaDJ) || listaDJ.length === 0){
         return;
-
     }
 
+    // Organiza os DJs pelo horário
+    listaDJ = [...listaDJ].sort(function(a, b){
 
-    let atual =
-        "AGUARDANDO";
+        let horaA = String(a.horario || "00:00").trim();
+        let horaB = String(b.horario || "00:00").trim();
 
+        return horaA.localeCompare(horaB);
 
-    let proximo =
-        "SEM PROGRAMAÇÃO";
+    });
 
+    let atual = "AGUARDANDO";
+    let proximo = "SEM PROGRAMAÇÃO";
+    let proximoHorario = null;
 
-    let proximoHorario =
-        null;
+    // Procura o DJ que já começou
+    for(let i = 0; i < listaDJ.length; i++){
 
+        let horarioDJ =
+            String(listaDJ[i].horario || "")
+            .trim()
+            .substring(0,5);
 
-    for(
-        let i = 0;
-        i < listaDJ.length;
-        i++
-    ){
-
-        if(
-            horaAtual >=
-            listaDJ[i].horario
-        ){
+        if(horarioDJ && horaAtual >= horarioDJ){
 
             atual =
-                listaDJ[i].nome;
+                listaDJ[i].nome || "DJ";
 
-
-            if(
-                i + 1 <
-                listaDJ.length
-            ){
+            // Próximo DJ
+            if(i + 1 < listaDJ.length){
 
                 proximo =
-                    listaDJ[i + 1].nome;
-
+                    listaDJ[i + 1].nome || "DJ";
 
                 proximoHorario =
-                    listaDJ[i + 1].horario;
+                    String(
+                        listaDJ[i + 1].horario || ""
+                    )
+                    .trim()
+                    .substring(0,5);
 
             }
 
@@ -412,18 +405,9 @@ function verificarDJ(horaAtual){
 
     }
 
-
+    // Atualiza DJ AO VIVO
     let campoAtual =
-        document.getElementById(
-            "djAtual"
-        );
-
-
-    let campoProximo =
-        document.getElementById(
-            "proximoDJ"
-        );
-
+        document.getElementById("djAtual");
 
     if(campoAtual){
 
@@ -432,6 +416,9 @@ function verificarDJ(horaAtual){
 
     }
 
+    // Atualiza PRÓXIMO DJ
+    let campoProximo =
+        document.getElementById("proximoDJ");
 
     if(campoProximo){
 
@@ -440,16 +427,12 @@ function verificarDJ(horaAtual){
 
     }
 
-
+    // Atualiza contador
     atualizarContador(
         proximoHorario
     );
 
-
-    // =================================
-    // TROCA DE DJ
-    // =================================
-
+    // Detecta troca de DJ
     if(
         atual !== ultimoDJ &&
         atual !== "AGUARDANDO"
@@ -458,11 +441,9 @@ function verificarDJ(horaAtual){
         ultimoDJ =
             atual;
 
-
         mostrarTroca(
             atual
         );
-
 
         anunciarDJ(
             atual
@@ -471,7 +452,6 @@ function verificarDJ(horaAtual){
     }
 
 }
-
 
 // =====================================
 // CONTADOR
