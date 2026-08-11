@@ -101,7 +101,22 @@ SALVAR PROGRAMAÇÃO
 
 
 
-<script src="supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL =
+"https://ioltmxperuplbrpccffo.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_CjJOUaV2x_taN_DorNADOA_q2chsO9U";
+
+const supabase =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+
 <script src="admin.js"></script>
 
 
