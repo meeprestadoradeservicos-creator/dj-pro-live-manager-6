@@ -901,31 +901,36 @@ function mostrarTroca(nome) {
 // VOZ DO DJ
 // =====================================
 
+// =====================================
+// VOZ DO DJ
+// =====================================
+
 function anunciarDJ(nome) {
 
-    if (
-        !("speechSynthesis" in window)
-    ) {
+    if (!("speechSynthesis" in window)) {
+
+        console.log(
+            "Voz não disponível neste navegador."
+        );
 
         return;
 
     }
 
 
-    speechSynthesis.cancel();
+    // Cancela qualquer fala anterior
+    window.speechSynthesis.cancel();
 
 
     let nomeVoz =
         String(nome)
-            .replace(
-                /^DJ\s+/i,
-                ""
-            );
+            .replace(/^DJ\s+/i, "")
+            .trim();
 
 
     let mensagem =
         "Atenção galera! " +
-        "Entrando no comando, DJ " +
+        "Entrando agora no comando, DJ " +
         nomeVoz;
 
 
@@ -939,25 +944,58 @@ function anunciarDJ(nome) {
         "pt-BR";
 
 
+    // Voz mais clara e um pouco mais rápida
     fala.rate =
-        0.9;
+        1.0;
 
 
     fala.pitch =
-        1;
+        1.0;
 
 
+    // Volume máximo permitido pela API
     fala.volume =
-        1;
+        1.0;
 
 
-    speechSynthesis.speak(
+    // Tenta selecionar uma voz brasileira
+    let vozes =
+        window.speechSynthesis.getVoices();
+
+
+    let vozBrasileira =
+        vozes.find(function(voz) {
+
+            return (
+                voz.lang &&
+                voz.lang
+                    .toLowerCase()
+                    .startsWith("pt-br")
+            );
+
+        });
+
+
+    if (vozBrasileira) {
+
+        fala.voice =
+            vozBrasileira;
+
+    }
+
+
+    // Fala imediatamente
+    window.speechSynthesis.speak(
         fala
     );
 
+
+    console.log(
+        "🔊 ANUNCIANDO DJ:",
+        nomeVoz
+    );
+
 }
-
-
 // =====================================
 // DATA E HORA DA BARRA
 // =====================================
