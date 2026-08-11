@@ -216,14 +216,22 @@ body{
 
 }
 
-#noticias{
+#noticias {
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
 
-    font-size:22px;
+    font-size: 22px;
+    color: #FFD700;
+    font-weight: bold;
 
-    color:#FFD700;
+    white-space: nowrap;
+}
 
-    font-weight:bold;
-
+#noticias marquee {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* ========================= */
