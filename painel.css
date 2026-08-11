@@ -233,6 +233,21 @@ body{
     width: 100%;
     box-sizing: border-box;
 }
+#noticias {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#noticias marquee {
+    display: block;
+    width: 100%;
+    min-width: 100%;
+    max-width: none;
+    overflow: hidden;
+    box-sizing: border-box;
+}
 
 /* ========================= */
 /*  TELA DE TROCA DE DJ      */
