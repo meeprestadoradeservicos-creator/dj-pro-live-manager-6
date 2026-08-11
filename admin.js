@@ -17,6 +17,18 @@ function entrar(){
 
     if(senha === "1234"){
 
+        // ADMINISTRADOR
+        document.getElementById("login").style.display =
+            "none";
+
+        document.getElementById("painelAdmin").style.display =
+            "block";
+
+        carregarProgramacao();
+
+    }else if(senha === "5678"){
+
+        // OPERADOR
         document.getElementById("login").style.display =
             "none";
 
@@ -33,7 +45,6 @@ function entrar(){
     }
 
 }
-
 
 // ==========================================
 // VERIFICAR SUPABASE
