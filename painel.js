@@ -317,19 +317,17 @@ function mostrarDadosPainel() {
     }
 
 
-    if (noticias) {
+   if (noticias) {
 
-        noticias.innerHTML =
-            '<div class="noticiaRolando">' +
-            (
-                dadosPainel.noticias ||
-                "🍻 Bem-vindos • Família Pagode • Equipe Tenebrosa"
-            ) +
-            "</div>";
+    noticias.innerHTML =
+        '<marquee behavior="scroll" direction="left" scrollamount="6">' +
+        (
+            dadosPainel.noticias ||
+            "🍻 Bem-vindos • Família Pagode • Equipe Tenebrosa"
+        ) +
+        '</marquee>';
 
-    }
-
-
+}
     mostrarLista(
         dadosPainel.programacao
     );
