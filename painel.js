@@ -317,15 +317,15 @@ function mostrarDadosPainel() {
     }
 
 
-   if (noticias) {
+  if (noticias) {
 
     noticias.innerHTML =
-        '<marquee behavior="scroll" direction="left" scrollamount="6">' +
+        '<div class="noticiaMovendo">' +
         (
             dadosPainel.noticias ||
             "🍻 Bem-vindos • Família Pagode • Equipe Tenebrosa"
         ) +
-        '</marquee>';
+        '</div>';
 
 }
     mostrarLista(
