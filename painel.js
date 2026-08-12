@@ -206,16 +206,17 @@ async function carregarPainelOnline() {
         mostrarDadosPainel();
 
 
-        // Atualiza imediatamente o DJ
         atualizarDJAgora();
 
 
-   } catch (erro) {
+    } catch (erro) {
 
-    console.log(
-        "Erro de conexão com Supabase:",
-        erro
-    );
+        console.log(
+            "Erro de conexão com Supabase:",
+            erro
+        );
+
+    }
 
 }
 
