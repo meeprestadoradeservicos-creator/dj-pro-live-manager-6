@@ -38,7 +38,7 @@ body{
 
     align-items: center;
 
-    padding: 20px;
+ padding: 0 20px 20px 20px;
 
     background:
         linear-gradient(180deg, #111, #050505);
@@ -54,7 +54,7 @@ body{
 
     width: 65%;
 
-    padding: 20px;
+   padding: 0 20px 20px 20px;
 
     display: flex;
 
