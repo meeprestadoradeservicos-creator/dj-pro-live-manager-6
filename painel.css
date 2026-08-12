@@ -218,6 +218,7 @@ body{
 
 #noticias {
     width: 100%;
+    max-width: 100%;
     overflow: hidden;
     box-sizing: border-box;
 
@@ -230,22 +231,8 @@ body{
 
 #noticias marquee {
     display: block;
-    width: 100%;
-    box-sizing: border-box;
-}
-#noticias {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-}
-
-#noticias marquee {
-    display: block;
-    width: 100%;
+    width: max-content;
     min-width: 100%;
-    max-width: none;
-    overflow: hidden;
     box-sizing: border-box;
 }
 
