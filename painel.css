@@ -16,45 +16,53 @@ body{
 
 }
 
-.painel{
+.painel {
 
-    width:100%;
-    height:100vh;
+    width: 100%;
+    height: 100vh;
 
-    display:flex;
+    display: flex;
+
+    box-sizing: border-box;
 
 }
 
-.ladoEsquerdo{
 
-    width:35%;
+.ladoEsquerdo {
 
-    display:flex;
+    width: 35%;
 
-    flex-direction:column;
+    display: flex;
 
-    align-items:center;
+    flex-direction: column;
 
-    padding:20px;
+    align-items: center;
+
+    padding: 20px;
 
     background:
-    linear-gradient(180deg,#111,#050505);
+        linear-gradient(180deg, #111, #050505);
 
-    position:relative;
+    position: relative;
+
+    box-sizing: border-box;
 
 }
 
-.ladoDireito{
 
-    width:65%;
+.ladoDireito {
 
-    padding:20px;
+    width: 65%;
 
-    display:flex;
+    padding: 20px;
 
-    flex-direction:column;
+    display: flex;
 
-    gap:15px;
+    flex-direction: column;
+
+    gap: 15px;
+
+    box-sizing: border-box;
 
 }
 
