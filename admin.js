@@ -17,7 +17,6 @@ function entrar(){
 
     if(senha === "1234"){
 
-        // ADMINISTRADOR
         document.getElementById("login").style.display =
             "none";
 
@@ -26,9 +25,10 @@ function entrar(){
 
         carregarProgramacao();
 
-    }else if(senha === "5678"){
+    }
 
-        // OPERADOR
+    else if(senha === "5678"){
+
         document.getElementById("login").style.display =
             "none";
 
@@ -37,7 +37,9 @@ function entrar(){
 
         carregarProgramacao();
 
-    }else{
+    }
+
+    else{
 
         document.getElementById("erro").innerHTML =
             "Senha incorreta";
@@ -46,16 +48,30 @@ function entrar(){
 
 }
 
+
 // ==========================================
 // VERIFICAR SUPABASE
 // ==========================================
 
 function verificarSupabase(){
 
-    if(typeof supabase === "undefined"){
+    if(typeof supabaseClient === "undefined"){
 
         alert(
             "Erro: conexão com o Supabase não carregou."
+        );
+
+        return false;
+
+    }
+
+    if(
+        !supabaseClient ||
+        typeof supabaseClient.from !== "function"
+    ){
+
+        alert(
+            "Erro: cliente do Supabase não carregou corretamente."
         );
 
         return false;
@@ -92,6 +108,7 @@ function adicionarDJ(){
     listaDJ.push({
 
         horario: horario,
+
         nome: nome
 
     });
@@ -129,7 +146,11 @@ function atualizarTabela(){
             "corpoTabela"
         );
 
-    if(!corpo) return;
+    if(!corpo){
+
+        return;
+
+    }
 
     corpo.innerHTML = "";
 
@@ -189,20 +210,21 @@ function removerDJ(indice){
 
 async function salvar(){
 
-    if(!verificarSupabase()) return;
+    if(!verificarSupabase()){
 
+        return;
+
+    }
 
     let festa =
         document.getElementById(
             "festa"
         ).value;
 
-
     let noticias =
         document.getElementById(
             "noticias"
         ).value;
-
 
     if(festa === ""){
 
@@ -214,7 +236,6 @@ async function salvar(){
 
     }
 
-
     if(listaDJ.length === 0){
 
         alert(
@@ -225,9 +246,6 @@ async function salvar(){
 
     }
 
-
-    // Garantir ordem dos horários
-
     listaDJ.sort(function(a,b){
 
         return String(a.horario)
@@ -237,13 +255,10 @@ async function salvar(){
 
     });
 
-
     try{
 
-        // Procurar o registro mais recente
-
         const resultado =
-            await supabase
+            await supabaseClient
                 .from("painel")
                 .select("id")
                 .order(
@@ -254,10 +269,10 @@ async function salvar(){
                 )
                 .limit(1);
 
-
         if(resultado.error){
 
             console.error(
+                "Erro ao consultar painel:",
                 resultado.error
             );
 
@@ -269,22 +284,16 @@ async function salvar(){
 
         }
 
-
         let registro =
             resultado.data &&
             resultado.data.length
                 ? resultado.data[0]
                 : null;
 
-
-        // ==================================
-        // SE JÁ EXISTE REGISTRO, ATUALIZA
-        // ==================================
-
         if(registro){
 
             const atualizacao =
-                await supabase
+                await supabaseClient
                     .from("painel")
                     .update({
 
@@ -300,10 +309,10 @@ async function salvar(){
                         registro.id
                     );
 
-
             if(atualizacao.error){
 
                 console.error(
+                    "Erro ao atualizar:",
                     atualizacao.error
                 );
 
@@ -317,14 +326,10 @@ async function salvar(){
 
         }
 
-        // ==================================
-        // SE NÃO EXISTE, CRIA
-        // ==================================
-
         else{
 
             const novoRegistro =
-                await supabase
+                await supabaseClient
                     .from("painel")
                     .insert({
 
@@ -336,10 +341,10 @@ async function salvar(){
 
                     });
 
-
             if(novoRegistro.error){
 
                 console.error(
+                    "Erro ao criar:",
                     novoRegistro.error
                 );
 
@@ -352,9 +357,6 @@ async function salvar(){
             }
 
         }
-
-
-        // Também mantém uma cópia local
 
         localStorage.setItem(
             "festa",
@@ -371,15 +373,16 @@ async function salvar(){
             JSON.stringify(listaDJ)
         );
 
-
         alert(
             "✅ Programação salva ONLINE com sucesso!"
         );
 
+    }
 
-    }catch(erro){
+    catch(erro){
 
         console.error(
+            "Erro inesperado:",
             erro
         );
 
@@ -393,18 +396,21 @@ async function salvar(){
 
 
 // ==========================================
-// CARREGAR PROGRAMAÇÃO DO SUPABASE
+// CARREGAR PROGRAMAÇÃO
 // ==========================================
 
 async function carregarProgramacao(){
 
-    if(!verificarSupabase()) return;
+    if(!verificarSupabase()){
 
+        return;
+
+    }
 
     try{
 
         const resultado =
-            await supabase
+            await supabaseClient
                 .from("painel")
                 .select(
                     "festa,noticias,programacao"
@@ -417,17 +423,16 @@ async function carregarProgramacao(){
                 )
                 .limit(1);
 
-
         if(resultado.error){
 
             console.error(
+                "Erro ao carregar:",
                 resultado.error
             );
 
             return;
 
         }
-
 
         if(
             resultado.data &&
@@ -436,7 +441,6 @@ async function carregarProgramacao(){
 
             let dados =
                 resultado.data[0];
-
 
             if(
                 Array.isArray(
@@ -449,38 +453,40 @@ async function carregarProgramacao(){
 
             }
 
-
-            if(
-                document.getElementById("festa")
-            ){
-
+            let campoFesta =
                 document.getElementById(
                     "festa"
-                ).value =
+                );
+
+            if(campoFesta){
+
+                campoFesta.value =
                     dados.festa || "";
 
             }
 
-
-            if(
-                document.getElementById("noticias")
-            ){
-
+            let campoNoticias =
                 document.getElementById(
                     "noticias"
-                ).value =
+                );
+
+            if(campoNoticias){
+
+                campoNoticias.value =
                     dados.noticias || "";
 
             }
-
 
             atualizarTabela();
 
         }
 
-    }catch(erro){
+    }
+
+    catch(erro){
 
         console.error(
+            "Erro ao carregar programação:",
             erro
         );
 
@@ -496,8 +502,6 @@ async function carregarProgramacao(){
 document.addEventListener(
     "DOMContentLoaded",
     function(){
-
-        // Primeiro tenta carregar do Supabase
 
         carregarProgramacao();
 
