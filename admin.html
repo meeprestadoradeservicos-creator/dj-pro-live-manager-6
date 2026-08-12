@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -11,9 +11,7 @@
 
 </head>
 
-
 <body>
-
 
 <div id="login">
 
@@ -32,40 +30,35 @@ ENTRAR
 </div>
 
 
-
 <div id="painelAdmin" style="display:none">
 
-
 <h1>PAINEL DE CONTROLE</h1>
-
 
 <label>Nome da Festa</label>
 
 <input id="festa" value="NOME DA FESTA">
 
 
-
 <label>Programação dos DJs</label>
 
 <table id="tabelaDJ">
 
-    <thead>
+<thead>
 
-        <tr>
+<tr>
 
-            <th>Horário</th>
+<th>Horário</th>
 
-            <th>Nome do DJ</th>
+<th>Nome do DJ</th>
 
-            <th>Ação</th>
+<th>Ação</th>
 
-        </tr>
+</tr>
 
-    </thead>
+</thead>
 
-    <tbody id="corpoTabela">
-
-    </tbody>
+<tbody id="corpoTabela">
+</tbody>
 
 </table>
 
@@ -84,10 +77,10 @@ placeholder="Nome do DJ">
 
 </button>
 
+
 <label>Notícias</label>
 
 <textarea id="noticias"></textarea>
-
 
 
 <button onclick="salvar()">
@@ -96,29 +89,29 @@ SALVAR PROGRAMAÇÃO
 
 </button>
 
-
 </div>
-
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+
 const SUPABASE_URL =
 "https://ioltmxperuplbrpccffo.supabase.co";
 
 const SUPABASE_KEY =
 "sb_publishable_CjJOUaV2x_taN_DorNADOA_q2chsO9U";
 
-const supabase =
+const supabaseClient =
 window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+SUPABASE_URL,
+SUPABASE_KEY
 );
+
 </script>
 
-<script src="admin.js"></script>
 
+<script src="admin.js"></script>
 
 </body>
 
