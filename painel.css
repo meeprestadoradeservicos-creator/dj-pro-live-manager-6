@@ -233,18 +233,19 @@ body{
     display: inline-block;
     white-space: nowrap;
     position: relative;
-    left: 100%;
 
-    animation: noticiaRolando 18s linear infinite;
+    animation: noticiaRolando 20s linear infinite;
 }
 @keyframes noticiaRolando {
+
     0% {
-        transform: translateX(0);
+        transform: translateX(770px);
     }
 
     100% {
         transform: translateX(-100%);
     }
+
 }
 
 /* ========================= */
