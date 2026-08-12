@@ -231,12 +231,12 @@ body{
 
 .noticiaMovendo {
     display: inline-block;
-    width: max-content;
-    padding-left: 100%;
+    white-space: nowrap;
+    position: relative;
+    left: 100%;
 
     animation: noticiaRolando 18s linear infinite;
 }
-
 @keyframes noticiaRolando {
     0% {
         transform: translateX(0);
