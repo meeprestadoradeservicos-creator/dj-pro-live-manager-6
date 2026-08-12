@@ -229,11 +229,22 @@ body{
     white-space: nowrap;
 }
 
-#noticias marquee {
-    display: block;
+.noticiaMovendo {
+    display: inline-block;
     width: max-content;
-    min-width: 100%;
-    box-sizing: border-box;
+    padding-left: 100%;
+
+    animation: noticiaRolando 18s linear infinite;
+}
+
+@keyframes noticiaRolando {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
 }
 
 /* ========================= */
