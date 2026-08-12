@@ -210,19 +210,14 @@ async function carregarPainelOnline() {
         atualizarDJAgora();
 
 
-    } catch (erro) {
+   } catch (erro) {
 
-        console.log(
-            "Erro de conexão com Supabase:",
-            erro
-        );
-
-        carregarPainelLocal();
-
-    }
+    console.log(
+        "Erro de conexão com Supabase:",
+        erro
+    );
 
 }
-
 
 // =====================================
 // BACKUP LOCAL
