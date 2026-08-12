@@ -224,36 +224,56 @@ body{
 
 }
 
+/* =====================================
+   BARRA DE NOTÍCIAS
+   ===================================== */
+
 #noticias {
     width: 100%;
-    max-width: 100%;
+    height: 40px;
+
     overflow: hidden;
+    position: relative;
+
     box-sizing: border-box;
 
-    font-size: 22px;
-    color: #FFD700;
-    font-weight: bold;
-
     white-space: nowrap;
+
+    display: flex;
+    align-items: center;
 }
 
+/* Texto que realmente se movimenta */
 .noticiaMovendo {
-    display: inline-block;
-    white-space: nowrap;
-    position: relative;
+    position: absolute;
+
     left: 100%;
 
-    animation: noticiaRolando 20s linear infinite;
+    width: max-content;
+
+    white-space: nowrap;
+
+    font-size: 22px;
+    font-weight: bold;
+    color: #FFD700;
+
+    animation: noticiaRolando 18s linear infinite;
 }
 
+/* Vai exatamente do limite direito
+   até sair completamente pela esquerda */
 @keyframes noticiaRolando {
+
     0% {
+        left: 100%;
         transform: translateX(0);
     }
 
     100% {
-        transform: translateX(calc(-100% - 100vw));
+        left: 0;
+        transform: translateX(-100%);
     }
+
 }
 
 /* ========================= */
